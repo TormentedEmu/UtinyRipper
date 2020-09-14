@@ -32,6 +32,7 @@ namespace uTinyRipperGUI
 
 			m_initialIntroText = IntroText.Text;
 			m_initialStatusText = (string)StatusText.Content;
+			ExportImageOption.Header = "Export Image as " + tga.Header.ToString();
 
 			string[] args = Environment.GetCommandLineArgs();
 			string[] files = args.Skip(1).ToArray();
@@ -147,6 +148,7 @@ namespace uTinyRipperGUI
 
 			TextureAssetExporter textureExporter = new TextureAssetExporter();
 			GameStructure.FileCollection.Exporter.OverrideExporter(ClassIDType.Texture2D, textureExporter);
+			GameStructure.FileCollection.Exporter.OverrideExporter(ClassIDType.Texture2DArray, new TextureArrayAssetExporter());
 			GameStructure.FileCollection.Exporter.OverrideExporter(ClassIDType.Cubemap, textureExporter);
 			GameStructure.FileCollection.Exporter.OverrideExporter(ClassIDType.Sprite, textureExporter);
 			GameStructure.FileCollection.Exporter.OverrideExporter(ClassIDType.Shader, new ShaderAssetExporter());
@@ -427,6 +429,14 @@ namespace uTinyRipperGUI
 			OpenExplorerSelectFile(m_exportPath);
 		}
 
+		private void OnOptionsTgaButtonClicked(object sender, RoutedEventArgs e)
+		{
+			System.Windows.Controls.MenuItem menuItem = sender as System.Windows.Controls.MenuItem;
+			ExportImageOption.Header = "Export Image as " + menuItem.Header.ToString();
+			Settings.Default.ExportImageType = menuItem.Name;
+			Logger.Log(LogType.Info, LogCategory.General, $"Exporting images as '{menuItem.Name}'");
+		}
+
 		// =====================================================
 		// Properties
 		// =====================================================
@@ -470,5 +480,6 @@ namespace uTinyRipperGUI
 		private readonly string m_initialStatusText;
 		private string m_exportPath;
 		private string[] m_processingFiles;
+
 	}
 }

@@ -8,6 +8,7 @@ using uTinyRipper.Classes.Textures;
 using uTinyRipper.Converters;
 using uTinyRipper.Project;
 using uTinyRipper.SerializedFiles;
+using TGASharpLib;
 
 using Object = uTinyRipper.Classes.Object;
 
@@ -37,7 +38,26 @@ namespace uTinyRipperGUI.Exporters
 						TextureConverter.UnpackNormal(bitmap.BitsPtr, bitmap.Bits.Length);
 					}
 
-					bitmap.Save(exportStream, ImageFormat.Png);
+					switch (Properties.Settings.Default.ExportImageType)
+					{
+						case "tga":
+							TGA tGA = new TGA(bitmap.DrawingBitmap);
+							tGA.Save(exportStream);
+							break;
+
+						case "png":
+							bitmap.Save(exportStream, ImageFormat.Png);
+							break;
+
+						case "bmp":
+							bitmap.Save(exportStream, ImageFormat.Bmp);
+							break;
+
+						case "jpg":
+							bitmap.Save(exportStream, ImageFormat.Jpeg);
+							break;
+					}
+
 					return true;
 				}
 			}
@@ -181,9 +201,9 @@ namespace uTinyRipperGUI.Exporters
 		{
 			if (asset.ClassID == ClassIDType.Sprite)
 			{
-				return TextureExportCollection.CreateExportCollection(this, (Sprite)asset);
+				return TextureExportCollection.CreateExportCollection(this, (Sprite)asset, Properties.Settings.Default.ExportImageType);
 			}
-			return new TextureExportCollection(this, (Texture2D)asset, true);
+			return new TextureExportCollection(this, (Texture2D)asset, true, Properties.Settings.Default.ExportImageType);
 		}
 
 		public AssetType ToExportType(Object asset)

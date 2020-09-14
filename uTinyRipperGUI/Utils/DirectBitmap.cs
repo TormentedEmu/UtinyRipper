@@ -8,6 +8,8 @@ namespace uTinyRipperGUI
 {
 	public sealed class DirectBitmap : IDisposable
 	{
+		public Bitmap DrawingBitmap => m_bitmap;
+
 		public DirectBitmap(int width, int height)
 		{
 			Width = width;

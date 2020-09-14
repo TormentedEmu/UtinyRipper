@@ -14,9 +14,10 @@ namespace uTinyRipper.Project
 	public class TextureExportCollection : AssetsExportCollection
 	{
 #warning TODO: optimize (now it is suuuuuuuuper slow)
-		public TextureExportCollection(IAssetExporter assetExporter, Texture2D texture, bool convert):
+		public TextureExportCollection(IAssetExporter assetExporter, Texture2D texture, bool convert, string exportType) :
 			base(assetExporter, texture)
 		{
+			ExportType = exportType;
 			m_convert = convert;
 			if (convert)
 			{
@@ -62,14 +63,14 @@ namespace uTinyRipper.Project
 			}
 		}
 
-		public static IExportCollection CreateExportCollection(IAssetExporter assetExporter, Sprite asset)
+		public static IExportCollection CreateExportCollection(IAssetExporter assetExporter, Sprite asset, string exportType)
 		{
 			Texture2D texture = asset.RD.Texture.FindAsset(asset.File);
 			if (texture == null)
 			{
 				return new FailExportCollection(assetExporter, asset);
 			}
-			return new TextureExportCollection(assetExporter, texture, true);
+			return new TextureExportCollection(assetExporter, texture, true, exportType);
 		}
 
 		protected override AssetImporter CreateImporter(IExportContainer container)
@@ -96,7 +97,7 @@ namespace uTinyRipper.Project
 		{
 			if (m_convert)
 			{
-				return "png";
+				return ExportType;
 			}
 			return base.GetExportExtension(asset);
 		}
@@ -215,5 +216,6 @@ namespace uTinyRipper.Project
 
 		private readonly bool m_convert;
 		private uint m_nextExportID = 0;
+		private string ExportType = "tga";
 	}
 }

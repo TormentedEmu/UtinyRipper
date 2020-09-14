@@ -72,6 +72,43 @@ namespace uTinyRipperGUI.Exporters
 			}
 		}
 
+		public static DirectBitmap DXTTextureToBitmap(int _width, int _height, TextureFormat textureFormat, byte[] data)
+		{
+			int width = _width;
+			int height = _height;
+			DirectBitmap bitmap = new DirectBitmap(width, height);
+			try
+			{
+				switch (textureFormat)
+				{
+					case TextureFormat.DXT1:
+					case TextureFormat.DXT1Crunched:
+						DxtDecoder.DecompressDXT1(data, width, height, bitmap.Bits);
+						break;
+
+					case TextureFormat.DXT3:
+						DxtDecoder.DecompressDXT3(data, width, height, bitmap.Bits);
+						break;
+
+					case TextureFormat.DXT5:
+					case TextureFormat.DXT5Crunched:
+						DxtDecoder.DecompressDXT5(data, width, height, bitmap.Bits);
+						break;
+
+					default:
+						throw new Exception(textureFormat.ToString());
+
+				}
+				bitmap.FlipY();
+				return bitmap;
+			}
+			catch
+			{
+				bitmap.Dispose();
+				throw;
+			}
+		}
+
 		public static DirectBitmap DXTCrunchedTextureToBitmap(Texture2D texture, byte[] data)
 		{
 			byte[] decompressed = DecompressCrunch(texture, data);

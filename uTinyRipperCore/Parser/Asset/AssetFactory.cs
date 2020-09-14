@@ -265,6 +265,8 @@ namespace uTinyRipper
 					return new SpriteAtlas(assetInfo);
 				case ClassIDType.TerrainLayer:
 					return new TerrainLayer(assetInfo);
+				case ClassIDType.Texture2DArray:
+					return new Texture2DArray(assetInfo);
 				default:
 					return null;
 			}
